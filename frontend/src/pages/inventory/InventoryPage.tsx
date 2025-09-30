@@ -58,8 +58,8 @@ const InventoryPage: React.FC = () => {
   const [selectedBatch, setSelectedBatch] = useState<MedicineBatchDto | null>(null);
 
   const filteredBatches = batches.filter(batch =>
-    batch.medicineName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    batch.batchNumber.toLowerCase().includes(searchTerm.toLowerCase())
+    batch.medicineName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    batch.batchNumber?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleCreate = async (data: CreateMedicineBatchDto | UpdateMedicineBatchDto) => {

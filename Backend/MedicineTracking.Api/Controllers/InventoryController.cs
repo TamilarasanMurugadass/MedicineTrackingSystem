@@ -77,7 +77,10 @@ public class InventoryController : ControllerBase
         try
         {
             // Users can only view their own transactions unless they're Admin or Pharmacist
-            var currentUserId = User.FindFirst("sub")?.Value ?? User.FindFirst("id")?.Value;
+            var currentUserId =
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (currentUserId != userId && !User.IsInRole("Admin") && !User.IsInRole("Pharmacist"))
             {
                 return StatusCode(403, ApiResponse<IEnumerable<InventoryTransactionDto>>.ErrorResponse("Access forbidden", 403));
@@ -135,7 +138,10 @@ public class InventoryController : ControllerBase
     {
         try
         {
-            var currentUserId = User.FindFirst("sub")?.Value ?? User.FindFirst("id")?.Value;
+            var currentUserId =
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(currentUserId))
             {
                 return Unauthorized(ApiResponse<InventoryTransactionDto>.ErrorResponse("User ID not found in token", 401));
@@ -169,20 +175,23 @@ public class InventoryController : ControllerBase
     }
 
     [HttpPost("withdraw")]
-    public async Task<ActionResult> WithdrawMedicine([FromBody] WithdrawMedicineRequest request)
+    public async Task<ActionResult<ApiResponse<object>>> WithdrawMedicine([FromBody] WithdrawMedicineRequest request)
     {
         try
         {
-            var currentUserId = User.FindFirst("sub")?.Value ?? User.FindFirst("id")?.Value;
+            var currentUserId =
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(currentUserId))
             {
-                return Unauthorized(new { message = "User ID not found in token" });
+                return Unauthorized(ApiResponse<object>.ErrorResponse("User ID not found in token", 401));
             }
 
             // Validate quantity
             if (request.Quantity <= 0)
             {
-                return BadRequest(new { message = "Quantity must be greater than zero" });
+                return BadRequest(ApiResponse<object>.ErrorResponse("Quantity must be greater than zero", 400));
             }
 
             var success = await _inventoryService.WithdrawMedicineAsync(
@@ -192,34 +201,37 @@ public class InventoryController : ControllerBase
                 request.PatientReference,
                 request.Notes,
                 currentUserId);
-
+            Console.WriteLine("Tamil Withdraw: " + success);
             if (!success)
             {
-                return BadRequest(new { message = "Failed to withdraw medicine. Please check stock availability." });
+                return BadRequest(ApiResponse<object>.ErrorResponse("Failed to withdraw medicine. Please check stock availability."));
             }
 
             _logger.LogInformation("Medicine withdrawn by user {UserId}: Batch {BatchId}, Quantity {Quantity}",
                 currentUserId, request.BatchId, request.Quantity);
 
-            return Ok(new { message = "Medicine withdrawn successfully" });
+            return Ok(ApiResponse<object>.SuccessResponse(new { }, "Medicine withdrawn successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error withdrawing medicine from batch {BatchId}", request.BatchId);
-            return StatusCode(500, new { message = "An error occurred while withdrawing medicine" });
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while withdrawing medicine", 500));
         }
     }
 
     [HttpPost("adjust-stock")]
     [Authorize(Roles = "Admin,Pharmacist")]
-    public async Task<ActionResult> AdjustStock([FromBody] AdjustStockRequest request)
+    public async Task<ActionResult<ApiResponse<object>>> AdjustStock([FromBody] AdjustStockRequest request)
     {
         try
         {
-            var currentUserId = User.FindFirst("sub")?.Value ?? User.FindFirst("id")?.Value;
+            var currentUserId =
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(currentUserId))
             {
-                return Unauthorized(new { message = "User ID not found in token" });
+                return Unauthorized(ApiResponse<object>.ErrorResponse("User ID not found in token", 401));
             }
 
             var success = await _inventoryService.AdjustStockAsync(
@@ -231,65 +243,71 @@ public class InventoryController : ControllerBase
 
             if (!success)
             {
-                return BadRequest(new { message = "Failed to adjust stock. Please check the adjustment amount." });
+                return BadRequest(ApiResponse<object>.ErrorResponse("Failed to adjust stock. Please check the adjustment amount.", 400));
             }
 
             _logger.LogInformation("Stock adjusted by user {UserId}: Batch {BatchId}, Adjustment {Adjustment}",
                 currentUserId, request.BatchId, request.Adjustment);
 
-            return Ok(new { message = "Stock adjusted successfully" });
+            return Ok(ApiResponse<object>.SuccessResponse(new { }, "Stock adjusted successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error adjusting stock for batch {BatchId}", request.BatchId);
-            return StatusCode(500, new { message = "An error occurred while adjusting stock" });
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while adjusting stock", 500));
         }
     }
 
     [HttpPost("mark-expired")]
     [Authorize(Roles = "Admin,Pharmacist")]
-    public async Task<ActionResult> MarkAsExpired([FromBody] MarkExpiredRequest request)
+    public async Task<ActionResult<ApiResponse<object>>> MarkAsExpired([FromBody] MarkExpiredRequest request)
     {
         try
         {
-            var currentUserId = User.FindFirst("sub")?.Value ?? User.FindFirst("id")?.Value;
+            var currentUserId =
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(currentUserId))
             {
-                return Unauthorized(new { message = "User ID not found in token" });
+                return Unauthorized(ApiResponse<object>.ErrorResponse("User ID not found in token", 401));
             }
 
             var success = await _inventoryService.MarkAsExpiredAsync(request.BatchId, request.Notes, currentUserId);
             if (!success)
             {
-                return BadRequest(new { message = "Failed to mark batch as expired" });
+                return BadRequest(ApiResponse<object>.ErrorResponse("Failed to mark batch as expired", 400));
             }
 
             _logger.LogInformation("Batch {BatchId} marked as expired by user {UserId}", request.BatchId, currentUserId);
-            return Ok(new { message = "Batch marked as expired successfully" });
+            return Ok(ApiResponse<object>.SuccessResponse(new { }, "Batch marked as expired successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error marking batch {BatchId} as expired", request.BatchId);
-            return StatusCode(500, new { message = "An error occurred while marking batch as expired" });
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while marking batch as expired", 500));
         }
     }
 
     [HttpPost("mark-damaged")]
     [Authorize(Roles = "Admin,Pharmacist")]
-    public async Task<ActionResult> MarkAsDamaged([FromBody] MarkDamagedRequest request)
+    public async Task<ActionResult<ApiResponse<object>>> MarkAsDamaged([FromBody] MarkDamagedRequest request)
     {
         try
         {
-            var currentUserId = User.FindFirst("sub")?.Value ?? User.FindFirst("id")?.Value;
+            var currentUserId =
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(currentUserId))
             {
-                return Unauthorized(new { message = "User ID not found in token" });
+                return Unauthorized(ApiResponse<object>.ErrorResponse("User ID not found in token", 401));
             }
 
             // Validate quantity
             if (request.Quantity <= 0)
             {
-                return BadRequest(new { message = "Quantity must be greater than zero" });
+                return BadRequest(ApiResponse<object>.ErrorResponse("Quantity must be greater than zero", 400));
             }
 
             var success = await _inventoryService.MarkAsDamagedAsync(
@@ -301,18 +319,18 @@ public class InventoryController : ControllerBase
 
             if (!success)
             {
-                return BadRequest(new { message = "Failed to mark items as damaged" });
+                return BadRequest(ApiResponse<object>.ErrorResponse("Failed to mark items as damaged", 400));
             }
 
             _logger.LogInformation("Damaged items recorded by user {UserId}: Batch {BatchId}, Quantity {Quantity}",
                 currentUserId, request.BatchId, request.Quantity);
 
-            return Ok(new { message = "Items marked as damaged successfully" });
+            return Ok(ApiResponse<object>.SuccessResponse(new { }, "Items marked as damaged successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error marking items as damaged for batch {BatchId}", request.BatchId);
-            return StatusCode(500, new { message = "An error occurred while marking items as damaged" });
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while marking items as damaged", 500));
         }
     }
 
@@ -342,7 +360,10 @@ public class InventoryController : ControllerBase
         try
         {
             // Users can only view their own summary unless they're Admin or Pharmacist
-            var currentUserId = User.FindFirst("sub")?.Value ?? User.FindFirst("id")?.Value;
+            var currentUserId =
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (currentUserId != userId && !User.IsInRole("Admin") && !User.IsInRole("Pharmacist"))
             {
                 return StatusCode(403, ApiResponse<IEnumerable<UsageSummaryDto>>.ErrorResponse("Access forbidden", 403));

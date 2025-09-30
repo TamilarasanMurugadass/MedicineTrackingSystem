@@ -12,10 +12,10 @@ const TransactionsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredTransactions = transactions.filter(transaction =>
-    transaction.medicineName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    transaction.batchNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    transaction.creatorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (transaction.reason && transaction.reason.toLowerCase().includes(searchTerm.toLowerCase()))
+    transaction.medicineName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    transaction.batchNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    transaction.creatorName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (transaction.reason && transaction.reason?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const getTransactionIcon = (transactionType: TransactionType) => {

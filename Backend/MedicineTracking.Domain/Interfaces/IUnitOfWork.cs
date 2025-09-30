@@ -1,4 +1,5 @@
 using MedicineTracking.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MedicineTracking.Domain.Interfaces;
 
@@ -17,4 +18,6 @@ public interface IUnitOfWork : IDisposable
     Task BeginTransactionAsync();
     Task CommitTransactionAsync();
     Task RollbackTransactionAsync();
+    Task ExecuteInTransactionAsync(Func<Task> operation);
+    DbSet<T> GetDbSet<T>() where T : class;
 }

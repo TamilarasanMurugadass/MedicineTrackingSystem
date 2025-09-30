@@ -107,7 +107,10 @@ frontend/src/
   - Apply `[Authorize]` at controller level, specific roles at action level
   - Consistent error handling with try-catch blocks
   - Proper logging with `ILogger<T>`
-  - Return consistent response formats
+  - **IMPORTANT: ALL controller actions MUST return `ApiResponse<T>` wrapper** for consistent API responses
+  - Use `ApiResponse<T>.SuccessResponse()` for successful operations
+  - Use `ApiResponse<T>.ErrorResponse()` for error responses
+  - Use `ApiResponse<T>.CreatedResponse()` for resource creation
 
 #### Example Controller Pattern:
 ```csharp
@@ -126,17 +129,17 @@ public class MedicinesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MedicineDto>>> GetAllMedicines()
+    public async Task<ActionResult<ApiResponse<IEnumerable<MedicineDto>>>> GetAllMedicines()
     {
         try
         {
             var medicines = await _medicineService.GetAllMedicinesAsync();
-            return Ok(medicines);
+            return Ok(ApiResponse<IEnumerable<MedicineDto>>.SuccessResponse(medicines, "Medicines retrieved successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving all medicines");
-            return StatusCode(500, new { message = "An error occurred while retrieving medicines" });
+            return StatusCode(500, ApiResponse<IEnumerable<MedicineDto>>.ErrorResponse("An error occurred while retrieving medicines"));
         }
     }
 }

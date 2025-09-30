@@ -1,6 +1,7 @@
 using MedicineTracking.Domain.Entities;
 using MedicineTracking.Domain.Interfaces;
 using MedicineTracking.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace MedicineTracking.Infrastructure.Repositories;
@@ -76,6 +77,30 @@ public class UnitOfWork : IUnitOfWork
             await _transaction.DisposeAsync();
             _transaction = null;
         }
+    }
+
+    public async Task ExecuteInTransactionAsync(Func<Task> operation)
+    {
+        var strategy = _context.Database.CreateExecutionStrategy();
+        await strategy.ExecuteAsync(async () =>
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                await operation();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        });
+    }
+
+    public DbSet<T> GetDbSet<T>() where T : class
+    {
+        return _context.Set<T>();
     }
 
     public void Dispose()

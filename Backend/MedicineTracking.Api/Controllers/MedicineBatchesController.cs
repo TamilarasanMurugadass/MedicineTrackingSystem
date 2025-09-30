@@ -111,42 +111,42 @@ public class MedicineBatchesController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<MedicineBatchDto>> GetBatchById(int id)
+    public async Task<ActionResult<ApiResponse<MedicineBatchDto>>> GetBatchById(int id)
     {
         try
         {
             var batch = await _medicineBatchService.GetBatchByIdAsync(id);
             if (batch == null)
             {
-                return NotFound(new { message = "Medicine batch not found" });
+                return NotFound(ApiResponse<MedicineBatchDto>.ErrorResponse("Medicine batch not found", 404));
             }
 
-            return Ok(batch);
+            return Ok(ApiResponse<MedicineBatchDto>.SuccessResponse(batch, "Medicine batch retrieved successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving medicine batch {BatchId}", id);
-            return StatusCode(500, new { message = "An error occurred while retrieving the medicine batch" });
+            return StatusCode(500, ApiResponse<MedicineBatchDto>.ErrorResponse("An error occurred while retrieving the medicine batch", 500));
         }
     }
 
     [HttpGet("{id}/with-transactions")]
-    public async Task<ActionResult<MedicineBatchDto>> GetBatchWithTransactions(int id)
+    public async Task<ActionResult<ApiResponse<MedicineBatchDto>>> GetBatchWithTransactions(int id)
     {
         try
         {
             var batch = await _medicineBatchService.GetBatchWithTransactionsAsync(id);
             if (batch == null)
             {
-                return NotFound(new { message = "Medicine batch not found" });
+                return NotFound(ApiResponse<MedicineBatchDto>.ErrorResponse("Medicine batch not found", 404));
             }
 
-            return Ok(batch);
+            return Ok(ApiResponse<MedicineBatchDto>.SuccessResponse(batch, "Medicine batch with transactions retrieved successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving medicine batch with transactions {BatchId}", id);
-            return StatusCode(500, new { message = "An error occurred while retrieving the medicine batch with transactions" });
+            return StatusCode(500, ApiResponse<MedicineBatchDto>.ErrorResponse("An error occurred while retrieving the medicine batch with transactions", 500));
         }
     }
 
@@ -156,10 +156,14 @@ public class MedicineBatchesController : ControllerBase
     {
         try
         {
-            var currentUserId = User.FindFirst("sub")?.Value ?? User.FindFirst("id")?.Value;
+            var currentUserId =
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(currentUserId))
             {
-                return Unauthorized(ApiResponse<MedicineBatchDto>.ErrorResponse("User ID not found in token", 401));
+                // return Unauthorized(ApiResponse<MedicineBatchDto>.ErrorResponse("User ID not found in token", 401));
+                return StatusCode(500, ApiResponse<MedicineBatchDto>.ErrorResponse("User ID not found in token"));
             }
 
             // Validate expiry date
@@ -202,73 +206,79 @@ public class MedicineBatchesController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin,Pharmacist")]
-    public async Task<ActionResult<MedicineBatchDto>> UpdateBatch(int id, [FromBody] UpdateMedicineBatchDto updateBatchDto)
+    public async Task<ActionResult<ApiResponse<MedicineBatchDto>>> UpdateBatch(int id, [FromBody] UpdateMedicineBatchDto updateBatchDto)
     {
         try
         {
-            var currentUserId = User.FindFirst("sub")?.Value ?? User.FindFirst("id")?.Value;
+            var currentUserId =
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(currentUserId))
             {
-                return Unauthorized(new { message = "User ID not found in token" });
+                return StatusCode(500, ApiResponse<MedicineBatchDto>.ErrorResponse("User ID not found in token"));
             }
 
             // Validate expiry date
             if (updateBatchDto.ExpiryDate <= DateTime.UtcNow.Date)
             {
-                return BadRequest(new { message = "Expiry date must be in the future" });
+                return BadRequest(ApiResponse<MedicineBatchDto>.ErrorResponse("Expiry date must be in the future", 400));
             }
 
             // Validate purchase date
             if (updateBatchDto.PurchaseDate > DateTime.UtcNow.Date)
             {
-                return BadRequest(new { message = "Purchase date cannot be in the future" });
+                return BadRequest(ApiResponse<MedicineBatchDto>.ErrorResponse("Purchase date cannot be in the future", 400));
             }
 
             var batch = await _medicineBatchService.UpdateBatchAsync(id, updateBatchDto, currentUserId);
             if (batch == null)
             {
-                return NotFound(new { message = "Medicine batch not found" });
+                return NotFound(ApiResponse<MedicineBatchDto>.ErrorResponse("Medicine batch not found", 404));
             }
 
             _logger.LogInformation("Medicine batch {BatchId} updated by user {UserId}", id, currentUserId);
-            return Ok(batch);
+            return Ok(ApiResponse<MedicineBatchDto>.SuccessResponse(batch, "Medicine batch updated successfully"));
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new { message = ex.Message });
+            return Conflict(ApiResponse<MedicineBatchDto>.ErrorResponse(ex.Message, 409));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error updating medicine batch {BatchId}", id);
-            return StatusCode(500, new { message = "An error occurred while updating the medicine batch" });
+            return StatusCode(500, ApiResponse<MedicineBatchDto>.ErrorResponse("An error occurred while updating the medicine batch", 500));
         }
     }
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult> DeleteBatch(int id)
+    public async Task<ActionResult<ApiResponse<object>>> DeleteBatch(int id)
     {
         try
         {
-            var currentUserId = User.FindFirst("sub")?.Value ?? User.FindFirst("id")?.Value;
+            var currentUserId =
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(currentUserId))
             {
-                return Unauthorized(new { message = "User ID not found in token" });
+                return StatusCode(500, ApiResponse<object>.ErrorResponse("User ID not found in token"));
             }
 
             var success = await _medicineBatchService.DeleteBatchAsync(id, currentUserId);
             if (!success)
             {
-                return NotFound(new { message = "Medicine batch not found" });
+                return NotFound(ApiResponse<object>.ErrorResponse("Medicine batch not found", 404));
             }
 
             _logger.LogInformation("Medicine batch {BatchId} deleted by user {UserId}", id, currentUserId);
-            return Ok(new { message = "Medicine batch deleted successfully" });
+            return Ok(ApiResponse<object>.SuccessResponse(null, "Medicine batch deleted successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting medicine batch {BatchId}", id);
-            return StatusCode(500, new { message = "An error occurred while deleting the medicine batch" });
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while deleting the medicine batch", 500));
         }
     }
 }

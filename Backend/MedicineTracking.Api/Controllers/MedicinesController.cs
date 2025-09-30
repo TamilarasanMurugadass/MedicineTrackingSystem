@@ -36,107 +36,107 @@ public class MedicinesController : ControllerBase
     }
 
     [HttpGet("active")]
-    public async Task<ActionResult<IEnumerable<MedicineDto>>> GetActiveMedicines()
+    public async Task<ActionResult<ApiResponse<IEnumerable<MedicineDto>>>> GetActiveMedicines()
     {
         try
         {
             var medicines = await _medicineService.GetActiveMedicinesAsync();
-            return Ok(medicines);
+            return Ok(ApiResponse<IEnumerable<MedicineDto>>.SuccessResponse(medicines, "Active medicines retrieved successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving active medicines");
-            return StatusCode(500, new { message = "An error occurred while retrieving active medicines" });
+            return StatusCode(500, ApiResponse<IEnumerable<MedicineDto>>.ErrorResponse("An error occurred while retrieving active medicines"));
         }
     }
 
     [HttpGet("low-stock")]
-    public async Task<ActionResult<IEnumerable<MedicineDto>>> GetLowStockMedicines()
+    public async Task<ActionResult<ApiResponse<IEnumerable<MedicineDto>>>> GetLowStockMedicines()
     {
         try
         {
             var medicines = await _medicineService.GetLowStockMedicinesAsync();
-            return Ok(medicines);
+            return Ok(ApiResponse<IEnumerable<MedicineDto>>.SuccessResponse(medicines, "Low stock medicines retrieved successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving low stock medicines");
-            return StatusCode(500, new { message = "An error occurred while retrieving low stock medicines" });
+            return StatusCode(500, ApiResponse<IEnumerable<MedicineDto>>.ErrorResponse("An error occurred while retrieving low stock medicines"));
         }
     }
 
     [HttpGet("search")]
-    public async Task<ActionResult<IEnumerable<MedicineDto>>> SearchMedicines([FromQuery] string searchTerm)
+    public async Task<ActionResult<ApiResponse<IEnumerable<MedicineDto>>>> SearchMedicines([FromQuery] string searchTerm)
     {
         try
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
             {
-                return BadRequest(new { message = "Search term cannot be empty" });
+                return BadRequest(ApiResponse<IEnumerable<MedicineDto>>.ErrorResponse("Search term cannot be empty"));
             }
 
             var medicines = await _medicineService.SearchMedicinesAsync(searchTerm);
-            return Ok(medicines);
+            return Ok(ApiResponse<IEnumerable<MedicineDto>>.SuccessResponse(medicines, "Medicines found successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error searching medicines with term {SearchTerm}", searchTerm);
-            return StatusCode(500, new { message = "An error occurred while searching medicines" });
+            return StatusCode(500, ApiResponse<IEnumerable<MedicineDto>>.ErrorResponse("An error occurred while searching medicines"));
         }
     }
 
     [HttpGet("stock-summary")]
-    public async Task<ActionResult<Dictionary<string, int>>> GetStockSummary()
+    public async Task<ActionResult<ApiResponse<Dictionary<string, int>>>> GetStockSummary()
     {
         try
         {
             var summary = await _medicineService.GetMedicineStockSummaryAsync();
-            return Ok(summary);
+            return Ok(ApiResponse<Dictionary<string, int>>.SuccessResponse(summary, "Stock summary retrieved successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving stock summary");
-            return StatusCode(500, new { message = "An error occurred while retrieving stock summary" });
+            return StatusCode(500, ApiResponse<Dictionary<string, int>>.ErrorResponse("An error occurred while retrieving stock summary"));
         }
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<MedicineDto>> GetMedicineById(int id)
+    public async Task<ActionResult<ApiResponse<MedicineDto>>> GetMedicineById(int id)
     {
         try
         {
             var medicine = await _medicineService.GetMedicineByIdAsync(id);
             if (medicine == null)
             {
-                return NotFound(new { message = "Medicine not found" });
+                return NotFound(ApiResponse<MedicineDto>.ErrorResponse("Medicine not found"));
             }
 
-            return Ok(medicine);
+            return Ok(ApiResponse<MedicineDto>.SuccessResponse(medicine, "Medicine retrieved successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving medicine {MedicineId}", id);
-            return StatusCode(500, new { message = "An error occurred while retrieving the medicine" });
+            return StatusCode(500, ApiResponse<MedicineDto>.ErrorResponse("An error occurred while retrieving the medicine"));
         }
     }
 
     [HttpGet("{id}/with-batches")]
-    public async Task<ActionResult<MedicineDto>> GetMedicineWithBatches(int id)
+    public async Task<ActionResult<ApiResponse<MedicineDto>>> GetMedicineWithBatches(int id)
     {
         try
         {
             var medicine = await _medicineService.GetMedicineWithBatchesAsync(id);
             if (medicine == null)
             {
-                return NotFound(new { message = "Medicine not found" });
+                return NotFound(ApiResponse<MedicineDto>.ErrorResponse("Medicine not found"));
             }
 
-            return Ok(medicine);
+            return Ok(ApiResponse<MedicineDto>.SuccessResponse(medicine, "Medicine with batches retrieved successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving medicine with batches {MedicineId}", id);
-            return StatusCode(500, new { message = "An error occurred while retrieving the medicine with batches" });
+            return StatusCode(500, ApiResponse<MedicineDto>.ErrorResponse("An error occurred while retrieving the medicine with batches"));
         }
     }
 
@@ -147,8 +147,8 @@ public class MedicinesController : ControllerBase
         try
         {
             var currentUserId = User.FindFirst("sub")?.Value ??
-                               User.FindFirst("id")?.Value ??
-                               User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             Console.WriteLine("Current User ID: " + currentUserId);
             if (string.IsNullOrEmpty(currentUserId))
             {
@@ -180,9 +180,10 @@ public class MedicinesController : ControllerBase
     {
         try
         {
-            var currentUserId = User.FindFirst("sub")?.Value ??
-                               User.FindFirst("id")?.Value ??
-                               User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+            var currentUserId =
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(currentUserId))
             {
                 return Unauthorized(ApiResponse<MedicineDto>.ErrorResponse("User ID not found in token"));
@@ -213,31 +214,32 @@ public class MedicinesController : ControllerBase
 
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult> DeleteMedicine(int id)
+    public async Task<ActionResult<ApiResponse<object>>> DeleteMedicine(int id)
     {
         try
         {
-            var currentUserId = User.FindFirst("sub")?.Value ??
-                               User.FindFirst("id")?.Value ??
-                               User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+            var currentUserId =
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("id")?.Value ??
+                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(currentUserId))
             {
-                return Unauthorized(new { message = "User ID not found in token" });
+                return Unauthorized(ApiResponse<object>.ErrorResponse("User ID not found in token"));
             }
 
             var success = await _medicineService.DeleteMedicineAsync(id, currentUserId);
             if (!success)
             {
-                return NotFound(new { message = "Medicine not found" });
+                return NotFound(ApiResponse<object>.ErrorResponse("Medicine not found"));
             }
 
             _logger.LogInformation("Medicine {MedicineId} deleted by user {UserId}", id, currentUserId);
-            return Ok(new { message = "Medicine deleted successfully" });
+            return Ok(ApiResponse<object>.SuccessResponse(null, "Medicine deleted successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting medicine {MedicineId}", id);
-            return StatusCode(500, new { message = "An error occurred while deleting the medicine" });
+            return StatusCode(500, ApiResponse<object>.ErrorResponse("An error occurred while deleting the medicine"));
         }
     }
 }

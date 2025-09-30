@@ -52,7 +52,7 @@ const AlertsPage: React.FC = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      setSummary(response.data);
+      setSummary(response.data.data);
     } catch (error) {
       console.error('Error fetching alert summary:', error);
     }
@@ -75,7 +75,7 @@ const AlertsPage: React.FC = () => {
         }
       });
 
-      let alertsData = response.data;
+      let alertsData = response.data.data;
 
       if (filterType === 'read') {
         alertsData = alertsData.filter((alert: Alert) => alert.isRead);

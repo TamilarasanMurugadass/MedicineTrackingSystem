@@ -117,7 +117,7 @@ export const useMedicines = () => {
 
     try {
       const response = await axios.get<ApiResponse<MedicineDto[]>>(
-        `${API_ENDPOINTS.MEDICINES_SEARCH}?search=${encodeURIComponent(searchTerm)}`,
+        `${API_ENDPOINTS.MEDICINES_SEARCH}?searchTerm=${encodeURIComponent(searchTerm)}`,
         { signal: abortControllerRef.current.signal }
       );
       if (response.data.success && response.data.data) {

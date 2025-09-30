@@ -32,8 +32,7 @@ const AdjustStockForm: React.FC<AdjustStockFormProps> = ({
   });
 
   const adjustment = watch('adjustment');
-  const newQuantity = batch.currentQuantity + (adjustment || 0);
-
+  const newQuantity = batch.currentQuantity + (Number(adjustment) || 0);
   const handleFormSubmit = async (data: AdjustStockRequest) => {
     const success = await onSubmit(data);
     if (success) {
