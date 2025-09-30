@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "4rEcK4Me5inUHFadHqtIM47Sh4grikJ4mjsMWw8xfy0=",
+  "Source": "MedicineTracking.Api",
+  "BasePath": "_content/MedicineTracking.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

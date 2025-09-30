@@ -1,0 +1,17 @@
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/bin/Debug/net9.0/MedicineTracking.Infrastructure.deps.json
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/bin/Debug/net9.0/MedicineTracking.Infrastructure.runtimeconfig.json
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/bin/Debug/net9.0/MedicineTracking.Infrastructure.dll
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/bin/Debug/net9.0/MedicineTracking.Infrastructure.pdb
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/bin/Debug/net9.0/MedicineTracking.Domain.dll
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/bin/Debug/net9.0/MedicineTracking.Domain.pdb
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/obj/Debug/net9.0/MedicineTracking.Infrastructure.csproj.AssemblyReference.cache
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/obj/Debug/net9.0/MedicineTracking.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/obj/Debug/net9.0/MedicineTracking.Infrastructure.AssemblyInfoInputs.cache
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/obj/Debug/net9.0/MedicineTracking.Infrastructure.AssemblyInfo.cs
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/obj/Debug/net9.0/MedicineTracking.Infrastructure.csproj.CoreCompileInputs.cache
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/obj/Debug/net9.0/Medicine.C55EA171.Up2Date
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/obj/Debug/net9.0/MedicineTracking.Infrastructure.dll
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/obj/Debug/net9.0/refint/MedicineTracking.Infrastructure.dll
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/obj/Debug/net9.0/MedicineTracking.Infrastructure.pdb
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/obj/Debug/net9.0/MedicineTracking.Infrastructure.genruntimeconfig.cache
+/home/tamilarasan.m@knackforge.com/Public/drugApp/MedicineTrackingSystem/Backend/MedicineTracking.Infrastructure/obj/Debug/net9.0/ref/MedicineTracking.Infrastructure.dll
