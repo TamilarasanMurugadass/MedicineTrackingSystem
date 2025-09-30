@@ -31,7 +31,7 @@ public class MedicinesController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error retrieving all medicines");
-            return StatusCode(500, ApiResponse<IEnumerable<MedicineDto>>.ErrorResponse("An error occurred while retrieving medicines", 500));
+            return StatusCode(500, ApiResponse<IEnumerable<MedicineDto>>.ErrorResponse("An error occurred while retrieving medicines"));
         }
     }
 
@@ -152,13 +152,13 @@ public class MedicinesController : ControllerBase
             Console.WriteLine("Current User ID: " + currentUserId);
             if (string.IsNullOrEmpty(currentUserId))
             {
-                return Unauthorized(ApiResponse<MedicineDto>.ErrorResponse("User ID not found in token", 401));
+                return Unauthorized(ApiResponse<MedicineDto>.ErrorResponse("User ID not found in token"));
             }
             // Check if medicine name is unique
             var isUnique = await _medicineService.IsMedicineNameUniqueAsync(createMedicineDto.Name);
             if (!isUnique)
             {
-                return Conflict(ApiResponse<MedicineDto>.ErrorResponse("A medicine with this name already exists", 409));
+                return Conflict(ApiResponse<MedicineDto>.ErrorResponse("A medicine with this name already exists"));
             }
 
             var medicine = await _medicineService.CreateMedicineAsync(createMedicineDto, currentUserId);
@@ -170,13 +170,13 @@ public class MedicinesController : ControllerBase
         {
             Console.WriteLine("Exception: " + ex.Message);
             _logger.LogError(ex, "Error creating medicine {MedicineName}", createMedicineDto.Name);
-            return StatusCode(500, ApiResponse<MedicineDto>.ErrorResponse("An error occurred while creating the medicine", 500));
+            return StatusCode(500, ApiResponse<MedicineDto>.ErrorResponse("An error occurred while creating the medicine"));
         }
     }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin,Pharmacist")]
-    public async Task<ActionResult<MedicineDto>> UpdateMedicine(int id, [FromBody] UpdateMedicineDto updateMedicineDto)
+    public async Task<ActionResult<ApiResponse<MedicineDto>>> UpdateMedicine(int id, [FromBody] UpdateMedicineDto updateMedicineDto)
     {
         try
         {
@@ -185,29 +185,29 @@ public class MedicinesController : ControllerBase
                                User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
             if (string.IsNullOrEmpty(currentUserId))
             {
-                return Unauthorized(new { message = "User ID not found in token" });
+                return Unauthorized(ApiResponse<MedicineDto>.ErrorResponse("User ID not found in token"));
             }
 
             // Check if medicine name is unique (excluding current medicine)
             var isUnique = await _medicineService.IsMedicineNameUniqueAsync(updateMedicineDto.Name, id);
             if (!isUnique)
             {
-                return Conflict(new { message = "A medicine with this name already exists" });
+                return Conflict(ApiResponse<MedicineDto>.ErrorResponse("A medicine with this name already exists"));
             }
 
             var medicine = await _medicineService.UpdateMedicineAsync(id, updateMedicineDto, currentUserId);
             if (medicine == null)
             {
-                return NotFound(new { message = "Medicine not found" });
+                return NotFound(ApiResponse<MedicineDto>.ErrorResponse("Medicine not found"));
             }
 
             _logger.LogInformation("Medicine {MedicineId} updated by user {UserId}", id, currentUserId);
-            return Ok(medicine);
+            return Ok(ApiResponse<MedicineDto>.SuccessResponse(medicine, "Medicine updated successfully"));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error updating medicine {MedicineId}", id);
-            return StatusCode(500, new { message = "An error occurred while updating the medicine" });
+            return StatusCode(500, ApiResponse<MedicineDto>.ErrorResponse("An error occurred while updating the medicine"));
         }
     }
 
