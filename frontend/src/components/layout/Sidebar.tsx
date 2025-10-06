@@ -62,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       )}
 
       <div
-        className={`fixed inset-y-0 left-0 z-50 bg-white shadow-lg transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:flex-shrink-0 ${
+        className={`fixed inset-y-0 left-0 z-50 bg-white dark:bg-gray-800 shadow-lg transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:flex-shrink-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         } ${isCollapsed ? 'w-16' : 'w-64'}`}
       >
@@ -121,8 +121,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     isCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-2'
                   } ${
                     isActive
-                      ? 'bg-primary-100 text-primary-900 border-r-2 border-primary-600'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                      ? 'bg-primary-100 dark:bg-primary-900 text-primary-900 dark:text-primary-100 border-r-2 border-primary-600'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                   }`}
                   title={isCollapsed ? item.name : undefined}
                   onClick={() => {
@@ -135,7 +135,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     className={`h-5 w-5 flex-shrink-0 ${
                       isCollapsed ? '' : 'mr-3'
                     } ${
-                      isActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-500'
+                      isActive ? 'text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400'
                     }`}
                   />
                   {!isCollapsed && item.name}
@@ -145,21 +145,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </nav>
 
           {/* User info */}
-          <div className={`flex-shrink-0 border-t border-gray-200 ${isCollapsed ? 'p-2' : 'p-4'}`}>
+          <div className={`flex-shrink-0 border-t border-gray-200 dark:border-gray-700 ${isCollapsed ? 'p-2' : 'p-4'}`}>
             <div className={`flex items-center ${isCollapsed ? 'justify-center' : ''}`}>
               <div className="flex-shrink-0">
-                <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
-                  <span className="text-sm font-medium text-primary-700">
+                <div className="h-8 w-8 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
+                  <span className="text-sm font-medium text-primary-700 dark:text-primary-300">
                     {user?.firstName?.[0]}{user?.lastName?.[0]}
                   </span>
                 </div>
               </div>
               {!isCollapsed && (
                 <div className="ml-3 flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                     {user?.fullName}
                   </p>
-                  <p className="text-xs text-gray-500 truncate">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                     {user?.roleName}
                   </p>
                 </div>

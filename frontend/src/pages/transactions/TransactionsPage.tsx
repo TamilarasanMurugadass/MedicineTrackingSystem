@@ -38,20 +38,20 @@ const TransactionsPage: React.FC = () => {
   const getTransactionBadge = (transaction: any) => {
     if (transaction.isStockAddition) {
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
           Stock Added
         </span>
       );
     }
     if (transaction.isStockReduction) {
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400">
           Stock Reduced
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">
         Adjustment
       </span>
     );
@@ -75,8 +75,8 @@ const TransactionsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Transaction History</h1>
-          <p className="mt-2 text-gray-600">View all inventory transactions and usage records</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Transaction History</h1>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">View all inventory transactions and usage records</p>
         </div>
       </div>
 
@@ -112,10 +112,10 @@ const TransactionsPage: React.FC = () => {
             </div>
             <div className="ml-5 w-0 flex-1">
               <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                   Stock Additions
                 </dt>
-                <dd className="text-lg font-medium text-gray-900">
+                <dd className="text-lg font-medium text-gray-900 dark:text-white">
                   {transactions.filter(t => t.isStockAddition).length}
                 </dd>
               </dl>
@@ -130,10 +130,10 @@ const TransactionsPage: React.FC = () => {
             </div>
             <div className="ml-5 w-0 flex-1">
               <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                   Stock Reductions
                 </dt>
-                <dd className="text-lg font-medium text-gray-900">
+                <dd className="text-lg font-medium text-gray-900 dark:text-white">
                   {transactions.filter(t => t.isStockReduction).length}
                 </dd>
               </dl>
@@ -148,10 +148,10 @@ const TransactionsPage: React.FC = () => {
             </div>
             <div className="ml-5 w-0 flex-1">
               <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                   Adjustments
                 </dt>
-                <dd className="text-lg font-medium text-gray-900">
+                <dd className="text-lg font-medium text-gray-900 dark:text-white">
                   {transactions.filter(t => t.transactionType === TransactionType.ADJUSTMENT).length}
                 </dd>
               </dl>
@@ -166,10 +166,10 @@ const TransactionsPage: React.FC = () => {
             </div>
             <div className="ml-5 w-0 flex-1">
               <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">
+                <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                   Expired/Damaged
                 </dt>
-                <dd className="text-lg font-medium text-gray-900">
+                <dd className="text-lg font-medium text-gray-900 dark:text-white">
                   {transactions.filter(t =>
                     t.transactionType === TransactionType.EXPIRED ||
                     t.transactionType === TransactionType.DAMAGED
@@ -189,7 +189,7 @@ const TransactionsPage: React.FC = () => {
           </div>
         ) : filteredTransactions.length === 0 ? (
           <div className="text-center py-8">
-            <div className="text-gray-500">No transactions found</div>
+            <div className="text-gray-500 dark:text-gray-400">No transactions found</div>
           </div>
         ) : (
           <Table>

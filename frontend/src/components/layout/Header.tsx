@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { BellIcon, Bars3Icon, ExclamationTriangleIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { useTheme } from '../../contexts/ThemeContext';
+import { BellIcon, Bars3Icon, ExclamationTriangleIcon, ClockIcon, SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
 import API_BASE_URL from '../../config/api';
 
@@ -32,6 +33,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -107,12 +109,12 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   }, [user]);
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
         {/* Mobile menu button */}
         <button
           type="button"
-          className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="lg:hidden p-2 rounded-md text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
           onClick={onMenuClick}
         >
           <span className="sr-only">Open menu</span>
@@ -121,18 +123,32 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
         {/* Title */}
         <div className="hidden lg:block">
-          <h1 className="text-lg font-semibold text-gray-900">
+          <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
             Medicine Tracking System
           </h1>
         </div>
 
         {/* Right side */}
         <div className="flex items-center space-x-4">
+          {/* Theme Toggle */}
+          <button
+            type="button"
+            className="p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
+            {theme === 'light' ? (
+              <MoonIcon className="h-6 w-6" />
+            ) : (
+              <SunIcon className="h-6 w-6" />
+            )}
+          </button>
+
           {/* Notifications */}
           <div className="relative">
             <button
               type="button"
-              className="p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="p-2 text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500"
               onClick={handleNotificationClick}
             >
               <span className="sr-only">View notifications</span>
@@ -152,24 +168,24 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                   className="fixed inset-0 z-10"
                   onClick={() => setIsNotificationOpen(false)}
                 />
-                <div className="absolute right-0 z-20 mt-2 w-80 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="absolute right-0 z-20 mt-2 w-80 origin-top-right bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black dark:ring-gray-700 ring-opacity-5 focus:outline-none">
                   <div className="py-1">
-                    <div className="px-4 py-3 border-b border-gray-200">
-                      <h3 className="text-sm font-medium text-gray-900">
+                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      <h3 className="text-sm font-medium text-gray-900 dark:text-white">
                         Notifications ({unreadCount})
                       </h3>
                     </div>
 
                     <div className="max-h-96 overflow-y-auto">
                       {unreadAlerts.length === 0 ? (
-                        <div className="px-4 py-6 text-center text-sm text-gray-500">
+                        <div className="px-4 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
                           No unread notifications
                         </div>
                       ) : (
                         unreadAlerts.slice(0, 5).map((alert) => (
                           <button
                             key={alert.id}
-                            className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                            className="w-full px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 last:border-b-0"
                             onClick={() => handleAlertClick(alert)}
                           >
                             <div className="flex items-start space-x-3">
@@ -183,13 +199,13 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900 truncate">
+                                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                                   {alert.medicineName}
                                 </p>
-                                <p className="text-sm text-gray-500 truncate">
+                                <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
                                   {alert.message}
                                 </p>
-                                <p className="text-xs text-gray-400 mt-1">
+                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                                   {new Date(alert.createdAt).toLocaleDateString()}
                                 </p>
                               </div>
@@ -200,9 +216,9 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                     </div>
 
                     {unreadAlerts.length > 0 && (
-                      <div className="px-4 py-2 border-t border-gray-200">
+                      <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
                         <button
-                          className="w-full text-center text-sm font-medium text-primary-600 hover:text-primary-500"
+                          className="w-full text-center text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300"
                           onClick={handleViewAllAlerts}
                         >
                           View all notifications
@@ -223,13 +239,13 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
               onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
             >
               <span className="sr-only">Open user menu</span>
-              <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
-                <span className="text-sm font-medium text-primary-700">
+              <div className="h-8 w-8 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
+                <span className="text-sm font-medium text-primary-700 dark:text-primary-300">
                   {user?.firstName?.[0]}{user?.lastName?.[0]}
                 </span>
               </div>
               <div className="hidden sm:block ml-2">
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   {user?.firstName} {user?.lastName}
                 </span>
               </div>
@@ -242,14 +258,14 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                   className="fixed inset-0 z-10"
                   onClick={() => setIsProfileMenuOpen(false)}
                 />
-                <div className="absolute right-0 z-20 mt-2 w-48 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="absolute right-0 z-20 mt-2 w-48 origin-top-right bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black dark:ring-gray-700 ring-opacity-5 focus:outline-none">
                   <div className="py-1">
-                    <div className="px-4 py-2 text-sm text-gray-700 border-b">
+                    <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">
                       <div className="font-medium">{user?.fullName}</div>
-                      <div className="text-gray-500">{user?.email}</div>
+                      <div className="text-gray-500 dark:text-gray-400">{user?.email}</div>
                     </div>
                     <button
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                       onClick={() => {
                         setIsProfileMenuOpen(false);
                         navigate('/profile');
@@ -258,7 +274,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                       Your Profile
                     </button>
                     <button
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                       onClick={() => {
                         setIsProfileMenuOpen(false);
                         navigate('/settings');
@@ -267,7 +283,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                       Settings
                     </button>
                     <button
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                       onClick={handleLogout}
                     >
                       Sign out

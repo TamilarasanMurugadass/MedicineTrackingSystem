@@ -91,8 +91,8 @@ const UsageTrackingPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Usage Tracking & Analytics</h1>
-          <p className="mt-2 text-gray-600">Monitor medicine usage patterns and consumption trends</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Usage Tracking & Analytics</h1>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">Monitor medicine usage patterns and consumption trends</p>
         </div>
         <div className="mt-4 sm:mt-0 flex space-x-3">
           <Button
@@ -118,7 +118,7 @@ const UsageTrackingPage: React.FC = () => {
       <Card>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Start Date
             </label>
             <Input
@@ -134,7 +134,7 @@ const UsageTrackingPage: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               End Date
             </label>
             <Input
@@ -150,13 +150,13 @@ const UsageTrackingPage: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Period
             </label>
             <select
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value as 'daily' | 'weekly' | 'monthly')}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+              className="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
             >
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
@@ -164,7 +164,7 @@ const UsageTrackingPage: React.FC = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Search Medicine
             </label>
             <Input
@@ -178,13 +178,13 @@ const UsageTrackingPage: React.FC = () => {
 
       {/* Analytics Overview */}
       <div>
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Usage Overview</h2>
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Usage Overview</h2>
         <UsageAnalytics {...analytics} />
       </div>
 
       {/* Usage Chart */}
       <div>
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Usage Trends</h2>
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Usage Trends</h2>
         <UsageChart
           data={usageData}
           title={`${selectedPeriod.charAt(0).toUpperCase() + selectedPeriod.slice(1)} Usage Patterns`}
@@ -195,8 +195,8 @@ const UsageTrackingPage: React.FC = () => {
       {/* Usage Patterns Table */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-medium text-gray-900">Medicine Usage Patterns</h2>
-          <div className="text-sm text-gray-500">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-white">Medicine Usage Patterns</h2>
+          <div className="text-sm text-gray-500 dark:text-gray-400">
             {filteredPatterns.length} of {usagePatterns.length} medicines
           </div>
         </div>
@@ -210,27 +210,27 @@ const UsageTrackingPage: React.FC = () => {
       {/* Additional Insights */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Insights</h3>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Quick Insights</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Medicines in use</span>
-              <span className="font-medium">{usagePatterns.filter(p => p.totalUsage > 0).length}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">Medicines in use</span>
+              <span className="font-medium dark:text-white">{usagePatterns.filter(p => p.totalUsage > 0).length}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">High usage medicines</span>
-              <span className="font-medium text-red-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">High usage medicines</span>
+              <span className="font-medium text-red-600 dark:text-red-400">
                 {usagePatterns.filter(p => p.usageFrequency === 'High').length}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Low usage medicines</span>
-              <span className="font-medium text-yellow-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Low usage medicines</span>
+              <span className="font-medium text-yellow-600 dark:text-yellow-400">
                 {usagePatterns.filter(p => p.usageFrequency === 'Low' && p.totalUsage > 0).length}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Critical stock (&lt; 7 days)</span>
-              <span className="font-medium text-red-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Critical stock (&lt; 7 days)</span>
+              <span className="font-medium text-red-600 dark:text-red-400">
                 {usagePatterns.filter(p => p.projectedDaysToEmpty !== null && p.projectedDaysToEmpty < 7).length}
               </span>
             </div>
@@ -238,28 +238,28 @@ const UsageTrackingPage: React.FC = () => {
         </Card>
 
         <Card>
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Recommendations</h3>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Recommendations</h3>
           <div className="space-y-3">
             {analytics.mostUsedMedicine && (
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <div className="text-sm font-medium text-blue-900">High Demand</div>
-                <div className="text-sm text-blue-700">
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <div className="text-sm font-medium text-blue-900 dark:text-blue-300">High Demand</div>
+                <div className="text-sm text-blue-700 dark:text-blue-400">
                   {analytics.mostUsedMedicine.name} is frequently used. Consider increasing stock levels.
                 </div>
               </div>
             )}
             {analytics.leastUsedMedicine && (
-              <div className="p-3 bg-yellow-50 rounded-lg">
-                <div className="text-sm font-medium text-yellow-900">Low Utilization</div>
-                <div className="text-sm text-yellow-700">
+              <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                <div className="text-sm font-medium text-yellow-900 dark:text-yellow-300">Low Utilization</div>
+                <div className="text-sm text-yellow-700 dark:text-yellow-400">
                   {analytics.leastUsedMedicine.name} has low usage. Review necessity of current stock levels.
                 </div>
               </div>
             )}
             {analytics.expiringBatches > 0 && (
-              <div className="p-3 bg-red-50 rounded-lg">
-                <div className="text-sm font-medium text-red-900">Expiry Alert</div>
-                <div className="text-sm text-red-700">
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                <div className="text-sm font-medium text-red-900 dark:text-red-300">Expiry Alert</div>
+                <div className="text-sm text-red-700 dark:text-red-400">
                   {analytics.expiringBatches} batches are nearing expiry. Plan usage accordingly.
                 </div>
               </div>

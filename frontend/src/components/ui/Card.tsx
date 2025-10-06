@@ -39,7 +39,7 @@ const Card: CardComponent = ({ children, className, padding = 'md' }) => {
   return (
     <div
       className={clsx(
-        'bg-white shadow rounded-lg border border-gray-200',
+        'bg-white dark:bg-gray-800 shadow rounded-lg border border-gray-200 dark:border-gray-700',
         paddingClasses[padding],
         className
       )}
@@ -51,7 +51,7 @@ const Card: CardComponent = ({ children, className, padding = 'md' }) => {
 
 const CardHeader: React.FC<CardHeaderProps> = ({ children, className }) => {
   return (
-    <div className={clsx('border-b border-gray-200 pb-4 mb-4', className)}>
+    <div className={clsx('border-b border-gray-200 dark:border-gray-700 pb-4 mb-4', className)}>
       {children}
     </div>
   );
@@ -67,7 +67,7 @@ const CardBody: React.FC<CardBodyProps> = ({ children, className }) => {
 
 const CardFooter: React.FC<CardFooterProps> = ({ children, className }) => {
   return (
-    <div className={clsx('border-t border-gray-200 pt-4 mt-4', className)}>
+    <div className={clsx('border-t border-gray-200 dark:border-gray-700 pt-4 mt-4', className)}>
       {children}
     </div>
   );
