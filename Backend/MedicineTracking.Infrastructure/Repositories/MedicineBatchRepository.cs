@@ -10,6 +10,35 @@ public class MedicineBatchRepository : Repository<MedicineBatch>
     {
     }
 
+    public override async Task<IEnumerable<MedicineBatch>> GetAllAsync()
+    {
+        return await _dbSet
+            .Include(b => b.Medicine)
+            .Include(b => b.Creator)
+            .OrderBy(b => b.Medicine.Name)
+            .ThenBy(b => b.ExpiryDate)
+            .ToListAsync();
+    }
+
+    public override async Task<MedicineBatch?> GetByIdAsync(int id)
+    {
+        return await _dbSet
+            .Include(b => b.Medicine)
+            .Include(b => b.Creator)
+            .FirstOrDefaultAsync(b => b.Id == id);
+    }
+
+    public override async Task<IEnumerable<MedicineBatch>> FindAsync(System.Linq.Expressions.Expression<Func<MedicineBatch, bool>> predicate)
+    {
+        return await _dbSet
+            .Where(predicate)
+            .Include(b => b.Medicine)
+            .Include(b => b.Creator)
+            .OrderBy(b => b.Medicine.Name)
+            .ThenBy(b => b.ExpiryDate)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<MedicineBatch>> GetBatchesNearingExpiryAsync(int daysAhead = 90)
     {
         var cutoffDate = DateTime.UtcNow.AddDays(daysAhead);

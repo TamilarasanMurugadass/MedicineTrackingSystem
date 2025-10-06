@@ -26,10 +26,10 @@ public class UnitOfWork : IUnitOfWork
     }
 
     public IRepository<Medicine> Medicines =>
-        _medicines ??= new Repository<Medicine>(_context);
+        _medicines ??= new MedicineRepository(_context);
 
     public IRepository<MedicineBatch> MedicineBatches =>
-        _medicineBatches ??= new Repository<MedicineBatch>(_context);
+        _medicineBatches ??= new MedicineBatchRepository(_context);
 
     public IRepository<InventoryTransaction> InventoryTransactions =>
         _inventoryTransactions ??= new Repository<InventoryTransaction>(_context);
