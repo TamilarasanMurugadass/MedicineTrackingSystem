@@ -32,6 +32,45 @@ public class MedicineTrackingDbContext : IdentityDbContext<User>
         modelBuilder.Entity<Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>>().ToTable("RoleClaims");
         modelBuilder.Entity<Microsoft.AspNetCore.Identity.IdentityUserToken<string>>().ToTable("UserTokens");
 
+        // Configure ASP.NET Identity key lengths for MySQL compatibility (max 767 bytes with utf8mb4)
+        modelBuilder.Entity<Microsoft.AspNetCore.Identity.IdentityRole>(entity =>
+        {
+            entity.Property(r => r.Id).HasMaxLength(128);
+            entity.Property(r => r.Name).HasMaxLength(128);
+            entity.Property(r => r.NormalizedName).HasMaxLength(128);
+            entity.Property(r => r.ConcurrencyStamp).HasMaxLength(128);
+        });
+
+        modelBuilder.Entity<Microsoft.AspNetCore.Identity.IdentityUserRole<string>>(entity =>
+        {
+            entity.Property(ur => ur.UserId).HasMaxLength(128);
+            entity.Property(ur => ur.RoleId).HasMaxLength(128);
+        });
+
+        modelBuilder.Entity<Microsoft.AspNetCore.Identity.IdentityUserClaim<string>>(entity =>
+        {
+            entity.Property(uc => uc.UserId).HasMaxLength(128);
+        });
+
+        modelBuilder.Entity<Microsoft.AspNetCore.Identity.IdentityUserLogin<string>>(entity =>
+        {
+            entity.Property(ul => ul.LoginProvider).HasMaxLength(128);
+            entity.Property(ul => ul.ProviderKey).HasMaxLength(128);
+            entity.Property(ul => ul.UserId).HasMaxLength(128);
+        });
+
+        modelBuilder.Entity<Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>>(entity =>
+        {
+            entity.Property(rc => rc.RoleId).HasMaxLength(128);
+        });
+
+        modelBuilder.Entity<Microsoft.AspNetCore.Identity.IdentityUserToken<string>>(entity =>
+        {
+            entity.Property(ut => ut.UserId).HasMaxLength(128);
+            entity.Property(ut => ut.LoginProvider).HasMaxLength(128);
+            entity.Property(ut => ut.Name).HasMaxLength(128);
+        });
+
         // Note: Using custom Role entity alongside IdentityRole for different purposes
 
         // Configure Role entity
@@ -43,6 +82,16 @@ public class MedicineTrackingDbContext : IdentityDbContext<User>
         // Configure User entity
         modelBuilder.Entity<User>(entity =>
         {
+            entity.Property(u => u.Id).HasMaxLength(128);
+            entity.Property(u => u.Email).HasMaxLength(128);
+            entity.Property(u => u.NormalizedEmail).HasMaxLength(128);
+            entity.Property(u => u.UserName).HasMaxLength(128);
+            entity.Property(u => u.NormalizedUserName).HasMaxLength(128);
+            entity.Property(u => u.ConcurrencyStamp).HasMaxLength(128);
+            entity.Property(u => u.SecurityStamp).HasMaxLength(128);
+            entity.Property(u => u.FirstName).HasMaxLength(100);
+            entity.Property(u => u.LastName).HasMaxLength(100);
+
             entity.HasIndex(e => e.Email).IsUnique();
             entity.HasOne(u => u.Role)
                   .WithMany(r => r.Users)
