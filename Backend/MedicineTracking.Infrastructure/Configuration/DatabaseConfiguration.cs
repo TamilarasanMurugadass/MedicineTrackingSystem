@@ -11,11 +11,25 @@ public static class DatabaseConfiguration
 {
     public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        // Try to get connection string from environment variable first (for cloud deployments like Render)
+        // Then fall back to configuration
+        var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+                              ?? configuration.GetConnectionString("DefaultConnection");
+
+        // Validate connection string
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException(
+                "Database connection string is not configured. " +
+                "Please set the 'DATABASE_URL' environment variable or configure 'DefaultConnection' in appsettings.json");
+        }
 
         services.AddDbContext<MedicineTrackingDbContext>(options =>
         {
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mySqlOptions =>
+            // Use a fixed MySQL version instead of AutoDetect to avoid connection string parsing issues during startup
+            var serverVersion = new MySqlServerVersion(new Version(8, 0, 21));
+
+            options.UseMySql(connectionString, serverVersion, mySqlOptions =>
             {
                 mySqlOptions.EnableRetryOnFailure(
                     maxRetryCount: 5,
