@@ -349,17 +349,69 @@ npm test
 
 ## Deployment Guidelines
 
-### Backend Deployment
-- Use production configuration
-- Set up reverse proxy (Nginx/IIS)
-- Configure HTTPS certificates
-- Database connection string security
+### Production Deployment
 
-### Frontend Deployment
-- Build production bundle
-- Configure routing for SPA
-- Set up CDN for static assets
-- Environment-specific configuration
+#### Backend Deployment (Render)
+- **Platform**: Render (https://render.com)
+- **Service URL**: https://medicinetrackingsystem.onrender.com
+- **Service ID**: srv-d3j14modl3ps73di28vg
+- **MCP Integration**: Render MCP configured for deployment management
+- **Configuration**:
+  - Use production configuration
+  - HTTPS enabled by default
+  - Environment variables configured in Render dashboard
+  - Auto-deploy enabled from Git repository
+
+#### Frontend Deployment (Vercel)
+- **Platform**: Vercel (https://vercel.com)
+- **Application URL**: https://frontend-one-dun-jvngqh3yht.vercel.app
+- **Configuration**:
+  - Production bundle optimization enabled
+  - SPA routing configured with rewrites
+  - CDN distribution for static assets
+  - Environment-specific variables configured
+  - Auto-deploy enabled from Git repository
+
+#### Production Database (Cloud MySQL)
+- **Host**: sql12.freesqldatabase.com
+- **Database Name**: sql12801891
+- **Database User**: sql12801891
+- **Database Password**: 6vdJf9E6W9
+- **Port**: 3306
+- **Connection String Format**:
+  ```
+  Server=sql12.freesqldatabase.com;Port=3306;Database=sql12801891;User=sql12801891;Password=6vdJf9E6W9
+  ```
+
+### Deployment Process
+
+#### Backend Deployment Steps
+1. Push code changes to Git repository
+2. Render automatically detects changes and triggers build
+3. Migrations run automatically on deployment
+4. Service restarts with new version
+5. Monitor deployment logs in Render dashboard
+
+#### Frontend Deployment Steps
+1. Push code changes to Git repository
+2. Vercel automatically detects changes and triggers build
+3. Production build optimized and deployed
+4. CDN cache updated globally
+5. Monitor deployment status in Vercel dashboard
+
+### Environment Variables
+
+#### Backend Environment Variables (Render)
+- `ConnectionStrings__DefaultConnection`: Production database connection string
+- `JWT__SecretKey`: Production JWT secret key
+- `JWT__Issuer`: MedicineTrackingAPI
+- `JWT__Audience`: MedicineTrackingClient
+- `CORS__AllowedOrigins`: https://frontend-one-dun-jvngqh3yht.vercel.app
+- `ASPNETCORE_ENVIRONMENT`: Production
+
+#### Frontend Environment Variables (Vercel)
+- `REACT_APP_API_URL`: https://medicinetrackingsystem.onrender.com
+- `NODE_ENV`: production
 
 ## Code Quality Standards
 

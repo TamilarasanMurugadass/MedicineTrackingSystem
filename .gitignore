@@ -33,6 +33,7 @@ artifacts/
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 # Frontend - Node/React
 node_modules/
+.vercel
 .pnp
 .pnp.js
 npm-debug.log*
