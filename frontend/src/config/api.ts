@@ -1,4 +1,11 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5169/api';
+// Ensure API_BASE_URL always includes /api prefix
+const getApiBaseUrl = () => {
+  const url = process.env.REACT_APP_API_URL || 'http://localhost:5169';
+  // If the URL doesn't end with /api, add it
+  return url.endsWith('/api') ? url : `${url}/api`;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export const API_ENDPOINTS = {
   // Authentication
