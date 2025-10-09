@@ -41,8 +41,23 @@ builder.Services.AddCors(options =>
         else
         {
             // Production - get allowed origins from configuration
-            var allowedOrigins = builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>()
-                ?? new[] { "https://yourdomain.com" };
+            var allowedOrigins = builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>();
+
+            // If not found in array format, try single value from environment variable
+            if (allowedOrigins == null || allowedOrigins.Length == 0)
+            {
+                var singleOrigin = builder.Configuration["CORS:AllowedOrigins:0"]
+                    ?? builder.Configuration["CORS__AllowedOrigins__0"];
+
+                if (!string.IsNullOrEmpty(singleOrigin))
+                {
+                    allowedOrigins = new[] { singleOrigin };
+                }
+                else
+                {
+                    allowedOrigins = new[] { "https://yourdomain.com" };
+                }
+            }
 
             policy.WithOrigins(allowedOrigins)
                   .AllowAnyMethod()
