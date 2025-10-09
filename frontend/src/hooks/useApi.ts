@@ -1,13 +1,11 @@
 import { useState, useCallback } from 'react';
 import axios, { AxiosResponse } from 'axios';
 
-const BASE_URL = process.env.REACT_APP_API_URL
-  ? `${process.env.REACT_APP_API_URL}/api`
-  : 'http://localhost:5169/api';
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5169';
 
 // Create axios instance with default config
 const apiClient = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BASE_URL.endsWith('/api') ? BASE_URL : `${BASE_URL}/api`,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
