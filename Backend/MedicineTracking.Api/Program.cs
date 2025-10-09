@@ -59,6 +59,8 @@ builder.Services.AddCors(options =>
                 }
             }
 
+            Console.WriteLine($"CORS Allowed Origins: {string.Join(", ", allowedOrigins)}");
+
             policy.WithOrigins(allowedOrigins)
                   .AllowAnyMethod()
                   .AllowAnyHeader()
