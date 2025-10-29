@@ -43,5 +43,19 @@ services:
     depends_on:
       - api
 
+  postgres:
+    image: postgres:16
+    container_name: postgres-local
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "MedicineTrackingDB"
+      POSTGRES_USER: "drugapp"
+      POSTGRES_PASSWORD: "Drugapp123!"
+      TZ: "Asia/Kolkata"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 volumes:
   mysql-data:
+  postgres-data:
