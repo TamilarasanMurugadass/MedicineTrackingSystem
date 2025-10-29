@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-local
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "DrugappRoot123!"
+      MYSQL_DATABASE: "MedicineTrackingDB"
+      MYSQL_USER: "drugapp"
+      MYSQL_PASSWORD: "Drugapp123!"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  api:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: medicine-tracking-api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=MedicineTrackingDB;User=drugapp;Password=Drugapp123!;ConvertZeroDateTime=True;SslMode=None;AllowPublicKeyRetrieval=True;
+    depends_on:
+      - mysql
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_API_URL=http://localhost:8080
+    container_name: medicine-tracking-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
+volumes:
+  mysql-data:
