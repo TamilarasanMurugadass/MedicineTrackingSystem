@@ -11,16 +11,27 @@ public static class DatabaseConfiguration
 {
     public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        // Try to get connection string from environment variable first (for cloud deployments like Render)
+        // Then fall back to configuration
+        var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+                              ?? configuration.GetConnectionString("DefaultConnection");
+
+        // Validate connection string
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException(
+                "Database connection string is not configured. " +
+                "Please set the 'DATABASE_URL' environment variable or configure 'DefaultConnection' in appsettings.json");
+        }
 
         services.AddDbContext<MedicineTrackingDbContext>(options =>
         {
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mySqlOptions =>
+            options.UseNpgsql(connectionString, npgsqlOptions =>
             {
-                mySqlOptions.EnableRetryOnFailure(
+                npgsqlOptions.EnableRetryOnFailure(
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(30),
-                    errorNumbersToAdd: null);
+                    errorCodesToAdd: null);
             });
 
             // Enable sensitive data logging in development

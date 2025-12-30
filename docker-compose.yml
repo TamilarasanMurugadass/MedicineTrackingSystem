@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-local
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "DrugappRoot123!"
+      MYSQL_DATABASE: "MedicineTrackingDB"
+      MYSQL_USER: "drugapp"
+      MYSQL_PASSWORD: "Drugapp123!"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  api:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: medicine-tracking-api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=MedicineTrackingDB;Username=drugapp;Password=Drugapp123!
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # - REACT_APP_API_URL=http://localhost:8080 -- docker backend API
+        - REACT_APP_API_URL=http://localhost:5169
+    container_name: medicine-tracking-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
+  postgres:
+    image: postgres:16
+    container_name: postgres-local
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "MedicineTrackingDB"
+      POSTGRES_USER: "drugapp"
+      POSTGRES_PASSWORD: "Drugapp123!"
+      TZ: "Asia/Kolkata"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  mysql-data:
+  postgres-data:

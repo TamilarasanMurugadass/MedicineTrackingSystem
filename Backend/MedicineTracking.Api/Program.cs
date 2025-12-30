@@ -41,8 +41,25 @@ builder.Services.AddCors(options =>
         else
         {
             // Production - get allowed origins from configuration
-            var allowedOrigins = builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>()
-                ?? new[] { "https://yourdomain.com" };
+            var allowedOrigins = builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>();
+
+            // If not found in array format, try single value from environment variable
+            if (allowedOrigins == null || allowedOrigins.Length == 0)
+            {
+                var singleOrigin = builder.Configuration["CORS:AllowedOrigins:0"]
+                    ?? builder.Configuration["CORS__AllowedOrigins__0"];
+
+                if (!string.IsNullOrEmpty(singleOrigin))
+                {
+                    allowedOrigins = new[] { singleOrigin };
+                }
+                else
+                {
+                    allowedOrigins = new[] { "https://yourdomain.com" };
+                }
+            }
+
+            Console.WriteLine($"CORS Allowed Origins: {string.Join(", ", allowedOrigins)}");
 
             policy.WithOrigins(allowedOrigins)
                   .AllowAnyMethod()
@@ -129,47 +146,14 @@ app.UseAuthorization();
 // Map Controllers
 app.MapControllers();
 
-// Ensure database is created and seeded
+// Initialize database and seed default data
 using (var scope = app.Services.CreateScope())
 {
-    try
-    {
-        var context = scope.ServiceProvider.GetRequiredService<MedicineTrackingDbContext>();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var context = scope.ServiceProvider.GetRequiredService<MedicineTrackingDbContext>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-        // Create database if it doesn't exist
-        await context.Database.EnsureCreatedAsync();
-
-        // Seed default admin user if no users exist
-        if (!context.Users.Any())
-        {
-            var adminRole = context.Roles.FirstOrDefault(r => r.Name == "Admin");
-            if (adminRole != null)
-            {
-                var adminUser = new User
-                {
-                    UserName = "admin@hospital.com",
-                    Email = "admin@hospital.com",
-                    FirstName = "System",
-                    LastName = "Administrator",
-                    RoleId = adminRole.Id,
-                    EmailConfirmed = true,
-                    IsActive = true
-                };
-
-                var result = await userManager.CreateAsync(adminUser, "Admin123!");
-                if (result.Succeeded)
-                {
-                    Console.WriteLine("Default admin user created: admin@hospital.com / Admin123!");
-                }
-            }
-        }
-    }
-    catch (Exception ex)
-    {
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while creating/seeding the database");
-    }
+    await DbInitializer.InitializeAsync(context, userManager, logger);
 }
 
 app.Run();

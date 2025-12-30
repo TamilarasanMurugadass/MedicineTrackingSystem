@@ -30,7 +30,7 @@ interface TableCellProps {
 
 export const Table: React.FC<TableProps> = ({ children, className }) => {
   return (
-    <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
+    <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 rounded-lg">
       <table className={clsx('min-w-full divide-y divide-gray-300', className)}>
         {children}
       </table>
@@ -76,7 +76,7 @@ export const TableCell: React.FC<TableCellProps> = ({ children, className, heade
   return (
     <Component
       className={clsx(
-        'px-6 py-4 text-sm',
+        'px-4 sm:px-6 py-4 text-sm whitespace-nowrap',
         {
           'font-medium text-gray-900 text-left': header,
           'text-gray-500': !header,
