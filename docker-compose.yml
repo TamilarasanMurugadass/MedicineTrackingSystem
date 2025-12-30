@@ -26,16 +26,17 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=MedicineTrackingDB;User=drugapp;Password=Drugapp123!;ConvertZeroDateTime=True;SslMode=None;AllowPublicKeyRetrieval=True;
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=MedicineTrackingDB;Username=drugapp;Password=Drugapp123!
     depends_on:
-      - mysql
+      - postgres
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - REACT_APP_API_URL=http://localhost:8080
+        # - REACT_APP_API_URL=http://localhost:8080 -- docker backend API
+        - REACT_APP_API_URL=http://localhost:5169
     container_name: medicine-tracking-frontend
     restart: unless-stopped
     ports:

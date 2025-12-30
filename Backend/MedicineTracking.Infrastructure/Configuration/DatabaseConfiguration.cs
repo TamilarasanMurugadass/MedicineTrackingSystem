@@ -26,15 +26,12 @@ public static class DatabaseConfiguration
 
         services.AddDbContext<MedicineTrackingDbContext>(options =>
         {
-            // Use a fixed MySQL version instead of AutoDetect to avoid connection string parsing issues during startup
-            var serverVersion = new MySqlServerVersion(new Version(8, 0, 21));
-
-            options.UseMySql(connectionString, serverVersion, mySqlOptions =>
+            options.UseNpgsql(connectionString, npgsqlOptions =>
             {
-                mySqlOptions.EnableRetryOnFailure(
+                npgsqlOptions.EnableRetryOnFailure(
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(30),
-                    errorNumbersToAdd: null);
+                    errorCodesToAdd: null);
             });
 
             // Enable sensitive data logging in development

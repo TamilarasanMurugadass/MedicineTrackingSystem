@@ -121,6 +121,14 @@ public class MedicineTrackingDbContext : IdentityDbContext<User>
             entity.HasIndex(e => e.IsActive);
             entity.HasIndex(e => e.CurrentQuantity);
 
+            // PostgreSQL: Configure DateTime fields to use 'timestamp without time zone'
+            // These are calendar dates, not timezone-specific timestamps
+            entity.Property(mb => mb.ExpiryDate)
+                  .HasColumnType("timestamp without time zone");
+
+            entity.Property(mb => mb.PurchaseDate)
+                  .HasColumnType("timestamp without time zone");
+
             entity.HasOne(mb => mb.Medicine)
                   .WithMany(m => m.MedicineBatches)
                   .HasForeignKey(mb => mb.MedicineId)
