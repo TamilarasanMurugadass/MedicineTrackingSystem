@@ -3,6 +3,7 @@ using System;
 using MedicineTracking.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MedicineTracking.Infrastructure.Migrations
 {
     [DbContext(typeof(MedicineTrackingDbContext))]
-    partial class MedicineTrackingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251029130312_InitialPostgreSQLMigration")]
+    partial class InitialPostgreSQLMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -292,7 +295,7 @@ namespace MedicineTracking.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("InitialQuantity")
                         .HasColumnType("integer");
@@ -304,7 +307,7 @@ namespace MedicineTracking.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("PurchaseDate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal?>("PurchasePrice")
                         .HasColumnType("decimal(10,2)");

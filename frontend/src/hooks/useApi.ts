@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import axios, { AxiosResponse } from 'axios';
 
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5169';
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 
 // Create axios instance with default config
 const apiClient = axios.create({
