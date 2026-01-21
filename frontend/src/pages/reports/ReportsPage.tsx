@@ -266,8 +266,8 @@ const ReportsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Reports & Analytics</h1>
-          <p className="mt-2 text-gray-600">Generate comprehensive reports and export data</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Reports & Analytics</h1>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">Generate comprehensive reports and export data</p>
         </div>
       </div>
 
@@ -282,8 +282,8 @@ const ReportsPage: React.FC = () => {
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-medium text-gray-900">{option.title}</h3>
-                <p className="mt-1 text-sm text-gray-500">{option.description}</p>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">{option.title}</h3>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{option.description}</p>
                 <ul className="mt-3 space-y-1">
                   {option.features.map((feature, index) => (
                     <li key={index} className="text-xs text-gray-400">• {feature}</li>
@@ -307,7 +307,7 @@ const ReportsPage: React.FC = () => {
       {/* Quick Export Section */}
       <Card>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-medium text-gray-900">Quick Export</h3>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white">Quick Export</h3>
           <div className="flex space-x-2">
             <Button
               variant="outline"
@@ -402,7 +402,7 @@ const ReportsPage: React.FC = () => {
 
           {selectedReport?.type !== 'usage' && (
             <div className="text-center py-12">
-              <div className="text-gray-500">
+              <div className="text-gray-500 dark:text-gray-400">
                 {selectedReport?.title} report view will be implemented here
               </div>
               <Button
